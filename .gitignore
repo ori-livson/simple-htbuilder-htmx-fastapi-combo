@@ -1,0 +1,5 @@
+.vscode
+misc
+sessions
+.DS_Store
+__pycache__
