@@ -134,6 +134,20 @@ def select(session_id: str) -> HTMLResponse:
     )
 
 
+@app.get("/table/sort/{header_key}")
+def sort(header_key: str, session_id: str) -> HTMLResponse:
+    # header_key must be an attribute name of Row
+    session = SESSIONS[session_id]
+    current_sort_col, current_sort_ascending = session.sort_by
+    matches_header = current_sort_col == header_key
+    new_sort_ascending = not current_sort_ascending if matches_header else True
+    session.sort_by = (header_key, new_sort_ascending)
+    session.sort()
+    return response(
+        dom=main_table(session),
+    )
+
+
 # Static resources
 
 app.mount("/static", StaticFiles(directory="static"), name="static")

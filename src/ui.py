@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 
 from htbuilder import (
     HtmlTag,
@@ -12,6 +12,7 @@ from htbuilder import (
     input_,
     p,
     script,
+    span,
     styles,
     table,
     tbody,
@@ -43,6 +44,15 @@ class SessionState:
     id: str
     name_contains: str
     rows: list[Row]
+    sort_by: tuple[str, bool]  # (attr of Row, ascending?)
+
+    def sort(self):
+        sort_col, sort_ascending = self.sort_by
+        self.rows = sorted(
+            self.rows,
+            key=lambda r: asdict(r)[sort_col],
+            reverse=not sort_ascending,
+        )
 
 
 def add_session(href: str, session: SessionState) -> str:
@@ -50,11 +60,14 @@ def add_session(href: str, session: SessionState) -> str:
 
 
 def initialise_session(session_id: str, init_rows: list[Row]) -> SessionState:
-    return SessionState(
+    result = SessionState(
         id=session_id,
         name_contains="",
         rows=init_rows,
+        sort_by=("name", True),
     )
+    result.sort()
+    return result
 
 
 def get_row(session: SessionState, row_id: str) -> Row | None:
@@ -137,10 +150,12 @@ def main_table(session: SessionState) -> HtmlTag:
         tr(
             th(
                 "Selected",
+                sort_icon(session, "selected"),
                 style=header_cell_style,
             ),
             th(
                 "Name",
+                sort_icon(session, "name"),
                 style=header_cell_style,
             ),
         )
@@ -166,6 +181,33 @@ def main_table(session: SessionState) -> HtmlTag:
         style=styles(
             width=px(200),
         ),
+    )
+
+
+def sort_icon(session: SessionState, header_key: str):
+    # header_key must be an attribute name of Row
+    sort_col, sort_ascending = session.sort_by
+    matches_header = sort_col == header_key
+    header_ascending = sort_ascending if matches_header else True
+
+    href = f"/table/sort/{header_key}"
+
+    up_arrow = "&#8593;"
+    down_arrow = "&#8595;"
+    sort_icon = up_arrow if header_ascending else down_arrow
+
+    icon_style = styles(
+        color="red" if matches_header else "white",
+        margin_left=ch(2),
+        text_decoration="none",
+        cursor="pointer",
+    )
+
+    return span(
+        sort_icon,
+        data_hx_get=add_session(href, session),
+        data_hx_target=f"#{TABLE_ID}",
+        style=icon_style,
     )
 
 
