@@ -117,9 +117,9 @@ def name_contains_input(session: SessionState) -> HtmlTag:
         name="name_contains",
         value=session.name_contains,
         placeholder=placeholder,
-        data_hx_get=add_session(f"/table/filter", session),
-        data_hx_trigger="input changed delay:300ms, keyup[key=='Enter']",
-        data_hx_target=f"#{TABLE_ID}",
+        hx_get=add_session(f"/table/filter", session),
+        hx_trigger="input changed delay:300ms, keyup[key=='Enter']",
+        hx_target=f"#{TABLE_ID}",
         style=styles(width=ch(len(placeholder))),
     )
 
@@ -131,9 +131,9 @@ def bulk_select_button(session: SessionState) -> HtmlTag:
     return button(
         button_text,
         id=SELECT_ALL_ID,
-        data_hx_post=add_session(href, session),
-        data_hx_target=f"#{TABLE_ID}",
-        data_hx_swap_oob="true",
+        hx_post=add_session(href, session),
+        hx_target=f"#{TABLE_ID}",
+        hx_swap_oob="true",
     )
 
 
@@ -160,7 +160,7 @@ def main_table(session: SessionState) -> HtmlTag:
             ),
         )
     )
-    data_rows = tbody(
+    rows = tbody(
         tr(
             td(
                 checkbox(row, session),
@@ -176,7 +176,7 @@ def main_table(session: SessionState) -> HtmlTag:
     )
     return table(
         heading_row,
-        data_rows,
+        rows,
         id=TABLE_ID,
         style=styles(
             width=px(200),
@@ -205,8 +205,8 @@ def sort_icon(session: SessionState, header_key: str):
 
     return span(
         sort_icon,
-        data_hx_get=add_session(href, session),
-        data_hx_target=f"#{TABLE_ID}",
+        hx_get=add_session(href, session),
+        hx_target=f"#{TABLE_ID}",
         style=icon_style,
     )
 
@@ -216,7 +216,7 @@ def checkbox(row: Row, session: SessionState) -> HtmlTag:
         type="checkbox",
         name="selected",
         value=row.id,
-        data_hx_post=add_session(f"/table/row/{row.id}/select", session),
+        hx_post=add_session(f"/table/row/{row.id}/select", session),
     )
     # need an absence of the checked attribute to render an unchecked checkbox
     if row.selected:
@@ -228,8 +228,8 @@ def checkbox(row: Row, session: SessionState) -> HtmlTag:
 def submit_button(session: SessionState) -> HtmlTag:
     return input_(
         type="submit",
-        data_hx_post=add_session("/", session),
-        data_hx_target=f"#{RESULT_ID}",
-        data_hx_swap="textContent",
+        hx_post=add_session("/", session),
+        hx_target=f"#{RESULT_ID}",
+        hx_swap="textContent",
         style=styles(width=ch(10)),
     )
