@@ -93,7 +93,7 @@ def filter_names(name_contains: str, session_id: str) -> HTMLResponse:
 #    All vs not all rows are selected
 
 
-@app.post("/table/row/{row_id}/select")
+@app.post("/table/row/{row_id}/toggle-select")
 def select(row_id: str, session_id: str) -> HTMLResponse:
     session = SESSIONS[session_id]
     if row := get_row(session=session, row_id=row_id):

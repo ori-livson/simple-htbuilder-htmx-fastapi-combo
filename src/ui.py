@@ -219,7 +219,7 @@ def checkbox(row: Row, session: SessionState) -> HtmlTag:
         type="checkbox",
         name="selected",
         value=row.id,
-        hx_post=add_session(f"/table/row/{row.id}/select", session),
+        hx_post=add_session(f"/table/row/{row.id}/toggle-select", session),
     )
     # need an absence of the checked attribute to render an unchecked checkbox
     if row.selected:
