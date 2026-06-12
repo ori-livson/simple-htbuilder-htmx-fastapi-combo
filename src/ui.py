@@ -80,33 +80,36 @@ def get_row(session: SessionState, row_id: str) -> Row | None:
 
 
 def homepage(session: SessionState) -> HtmlTag:
+    # Basic dark theme
+    html_style = styles(
+        background_color="black",
+        color="white",
+        padding_left=px(20),
+    )
+    # Stack body elements vertically with a bit of space between them
+    body_style = styles(
+        display="flex",
+        flex_direction="column",
+        gap=px(12),
+    )
+    # forms may have some default bot margin
+    form_style = styles(margin_bottom=px(0))
+
     return html(
-        style=styles(
-            background_color="black",
-            color="white",
-            padding_left=px(20),
-        )
-    )(
-        head(
-            script(src="/static/htmx.min.js"),
-        ),
+        head(script(src="/static/htmx.min.js")),
         body(
+            h3("HTMX Demo"),
             form(
-                h3("HTMX Demo"),
-                div(
-                    name_contains_input(session),
-                    bulk_select_button(session),
-                ),
-                main_table(session),
-                submit_button(session),
-                style=styles(
-                    display="flex",
-                    flex_direction="column",
-                    gap=px(12),
-                ),
+                name_contains_input(session),
+                bulk_select_button(session),
+                style=form_style,
             ),
+            main_table(session),
+            submit_button(session),
             p(id=RESULT_ID),
+            style=body_style,
         ),
+        style=html_style,
     )
 
 
@@ -120,6 +123,7 @@ def name_contains_input(session: SessionState) -> HtmlTag:
         hx_get=add_session(f"/table/filter", session),
         hx_trigger="input changed delay:300ms, keyup[key=='Enter']",
         hx_target=f"#{TABLE_ID}",
+        hx_swap="outerHTML",
         style=styles(width=ch(len(placeholder))),
     )
 
