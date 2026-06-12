@@ -87,27 +87,26 @@ def homepage(session: SessionState) -> HtmlTag:
         padding_left=px(20),
     )
     # Stack body elements vertically with a bit of space between them
-    body_style = styles(
+    form_style = styles(
         display="flex",
         flex_direction="column",
         gap=px(12),
     )
-    # forms may have some default bot margin
-    form_style = styles(margin_bottom=px(0))
 
     return html(
         head(script(src="/static/htmx.min.js")),
         body(
             h3("HTMX Demo"),
             form(
-                name_contains_input(session),
-                bulk_select_button(session),
+                span(
+                    name_contains_input(session),
+                    bulk_select_button(session),
+                ),
+                main_table(session),
+                submit_button(session),
                 style=form_style,
             ),
-            main_table(session),
-            submit_button(session),
             p(id=RESULT_ID),
-            style=body_style,
         ),
         style=html_style,
     )
