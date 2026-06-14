@@ -5,6 +5,8 @@ A simple example of an all-in-one python webapp with:
     2. [HTMX](https://htmx.org/) for enriching HTML elements with the ability to trigger HTTP endpoints, and swap out other elements with the response.
     3. [FastAPI](https://fastapi.tiangolo.com/) for the backend server.
 
+See: the [companion post](https://ori-livson.com/posts/simple-htbuilder-htmx-fastapi-combo/) on my blog
+
 ## Instructions:
 
 To setup:
