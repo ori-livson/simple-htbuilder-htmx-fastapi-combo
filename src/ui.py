@@ -10,6 +10,7 @@ from htbuilder import (
     head,
     html,
     input_,
+    link,
     p,
     script,
     span,
@@ -80,12 +81,6 @@ def get_row(session: SessionState, row_id: str) -> Row | None:
 
 
 def homepage(session: SessionState) -> HtmlTag:
-    # Basic dark theme
-    html_style = styles(
-        background_color="black",
-        color="white",
-        padding_left=px(20),
-    )
     # Stack body elements vertically with a bit of space between them
     form_style = styles(
         display="flex",
@@ -94,7 +89,11 @@ def homepage(session: SessionState) -> HtmlTag:
     )
 
     return html(
-        head(script(src="/static/htmx.min.js")),
+        head(
+            script(src="/static/htmx.min.js"),
+            link(rel="stylesheet", href="/static/light-theme.css", type="text/css"),
+            link(rel="stylesheet", href="/static/skeleton.css", type="text/css"),
+        ),
         body(
             h3("HTMX Demo"),
             form(
@@ -108,7 +107,7 @@ def homepage(session: SessionState) -> HtmlTag:
             ),
             p(id=RESULT_ID),
         ),
-        style=html_style,
+        style=styles(padding_left=px(24)),
     )
 
 
@@ -137,6 +136,8 @@ def bulk_select_button(session: SessionState) -> HtmlTag:
         hx_post=add_session(href, session),
         hx_target=f"#{TABLE_ID}",
         hx_swap_oob="true",
+        _class="button-primary",  # see skeleton.css
+        style=styles(margin_left=px(12)),
     )
 
 
@@ -182,7 +183,7 @@ def main_table(session: SessionState) -> HtmlTag:
         rows,
         id=TABLE_ID,
         style=styles(
-            width=px(200),
+            width=px(240),
         ),
     )
 
@@ -204,6 +205,7 @@ def sort_icon(session: SessionState, header_key: str):
         margin_left=ch(2),
         text_decoration="none",
         cursor="pointer",
+        font_weight="bold",
     )
 
     return span(
@@ -234,5 +236,6 @@ def submit_button(session: SessionState) -> HtmlTag:
         hx_post=add_session("/", session),
         hx_target=f"#{RESULT_ID}",
         hx_swap="textContent",
-        style=styles(width=ch(10)),
+        style=styles(width=ch(30)),
+        _class="button-primary",  # see skeleton.css
     )
